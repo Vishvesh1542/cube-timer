@@ -1,7 +1,4 @@
 from kivy.config import Config
-Config.set("graphics", "width", "360") # * 3
-Config.set("graphics", "height", "780") # * 3
-
 from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -13,10 +10,6 @@ from kivy.uix.widget import Widget
 
 from time import time, localtime
 import json
-
-import socket
-import threading
-
 
 class InfoLayout(MDBoxLayout):
     def __init__(self, *args, **kwargs):
@@ -116,7 +109,6 @@ class InfoView(MDBoxLayout):
         self.avg5_text.text = "AO5: " + str(avg5)
         self.avg12_text.text = "AO12: " + str(avg12)
 
-        print(self.avg_text, type(self.avg_text))
         self.layout.update_view(solves)
 
 class Layout(MDFloatLayout):
@@ -145,16 +137,6 @@ class Layout(MDFloatLayout):
         self.add_widget(self.label)
         self.add_widget(self.infoScreen)
 
-        # Create and start the client thread
-        self.client_thread = threading.Thread(target=self.client)
-        self.client_thread.daemon = True
-        self.client_thread.start()
-
-        # Create and start the client thread
-        self.client_thread = threading.Thread(target=self.client)
-        self.client_thread.daemon = True
-        self.client_thread.start()
-
     def on_touch_down(self, touch):
 
         if self.state == "start":
@@ -176,18 +158,6 @@ class Layout(MDFloatLayout):
 
         return super().on_touch_down(touch)
     
-    def client(self):
-        host = 'DESKTOP-0DRIHG3' # get local machine name
-        port = 8080  # Make sure it's within the > 1024 && < 65535 range
-        
-        self.client_socket = socket.socket()
-        self.client_socket.connect((host, port))
-        
-        message = 'Hello, Server'
-        self.client_socket.send(message.encode('utf-8'))
-        data = self.client_socket.recv(1024).decode('utf-8')
-        print('recieved data: ' + data)
-
     def on_touch_up(self, touch):
         if self.state == "start":
             self.start_time = time()
